@@ -1,0 +1,151 @@
+
+.auth-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f7f3ff, #ece6ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 35px 15px;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 460px;
+  background: white;
+  padding: 35px;
+  border-radius: 18px;
+  box-shadow: 0 15px 50px #38206b15;
+}
+
+.auth-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: #777185;
+  cursor: pointer;
+  margin-bottom: 25px;
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.auth-logo-icon {
+  background: #7041e8;
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.auth-logo h2 {
+  font-size: 24px;
+}
+
+.auth-logo h2 span {
+  color: #7041e8;
+}
+
+.auth-heading h1 {
+  font-size: 27px;
+  margin-bottom: 9px;
+}
+
+.auth-heading p {
+  color: #898394;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.auth-container form label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 17px 0 8px;
+}
+
+.auth-input {
+  height: 48px;
+  border: 1px solid #e5e0ed;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 13px;
+  color: #7041e8;
+}
+
+.auth-input:focus-within {
+  border-color: #7041e8;
+}
+
+.auth-input input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 13px;
+  background: transparent;
+}
+
+.auth-container select {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #e5e0ed;
+  border-radius: 9px;
+  padding: 0 12px;
+  background: white;
+  outline: none;
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: 25px;
+  padding: 15px;
+  background: #7041e8;
+  color: white;
+  border-radius: 9px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.auth-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-error, .auth-success {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.auth-error {
+  background: #fff0f0;
+  color: #c62828;
+}
+
+.auth-success {
+  background: #eaf9f0;
+  color: #16834b;
+}
+
+.auth-switch {
+  text-align: center;
+  font-size: 13px;
+  color: #777185;
+  margin-top: 25px;
+}
+
+.auth-switch button {
+  background: transparent;
+  color: #7041e8;
+  font-weight: bold;
+  margin-left: 5px;
+  cursor: pointer;
+}

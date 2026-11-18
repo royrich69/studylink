@@ -1,0 +1,147 @@
+
+.my-uploads-page {
+  max-width: 1100px;
+  min-height: 100vh;
+  margin: auto;
+  padding: 35px 25px;
+  background: #f7f8fc;
+  color: #20243a;
+  font-family: Arial, sans-serif;
+}
+
+.my-uploads-header {
+  margin-bottom: 30px;
+}
+
+.my-uploads-header h1 {
+  margin: 25px 0 8px;
+  font-size: 30px;
+  color: #20243a;
+}
+
+.my-uploads-header p {
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.back-btn,
+.refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 17px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.back-btn {
+  background: white;
+  color: #7041e8;
+  border: 1px solid #ddd;
+}
+
+.refresh-btn {
+  background: #7041e8;
+  color: white;
+}
+
+.uploads-list {
+  display: grid;
+  gap: 16px;
+}
+
+.upload-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: white;
+  padding: 23px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.upload-file-icon {
+  color: #7041e8;
+  background: #f0ebff;
+  padding: 13px;
+  border-radius: 10px;
+}
+
+.upload-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.upload-details h3 {
+  margin: 0 0 10px;
+  color: #20243a;
+}
+
+.upload-details p {
+  color: #777;
+  margin: 6px 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.upload-status {
+  padding: 7px 13px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.upload-status.pending {
+  background: #fff2d6;
+  color: #a66b00;
+}
+
+.upload-status.approved {
+  background: #e4f8eb;
+  color: #16803c;
+}
+
+.upload-status.rejected {
+  background: #ffe8e8;
+  color: #c62828;
+}
+
+.uploads-empty {
+  text-align: center;
+  background: white;
+  padding: 60px 20px;
+  border-radius: 12px;
+  color: #777;
+}
+
+.uploads-empty svg {
+  color: #7041e8;
+}
+
+.uploads-empty h3 {
+  color: #20243a;
+}
+
+@media (max-width: 650px) {
+  .my-uploads-page {
+    padding: 25px 15px;
+  }
+
+  .upload-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 18px;
+  }
+
+  .upload-details {
+    flex-basis: calc(100% - 70px);
+  }
+
+  .upload-status {
+    margin-left: 60px;
+  }
+}
