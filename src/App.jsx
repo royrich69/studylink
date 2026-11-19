@@ -20,13 +20,17 @@ import "./App.css";
 
 function App() {
   const [showAuth, setShowAuth] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+const [initialCategory, setInitialCategory] = useState("");
   const [showAdminHome, setShowAdminHome] = useState(false);
   const [session, setSession] = useState(null);
   const [checkingSession, setCheckingSession] = useState(Boolean(supabase));
   const [adminCheck, setAdminCheck] = useState(null);
   const checkingAdmin = Boolean(
     session && adminCheck?.userId !== session.user.id
+
   );
+  
   const isAdmin =
     Boolean(session) &&
     adminCheck?.userId === session.user.id &&
@@ -134,7 +138,14 @@ function App() {
     />
   );
 }
-if (session && !isAdmin) return <Dashboard session={session} />;
+if (session && !isAdmin) {
+  return (
+    <Dashboard
+      session={session}
+      initialCategory={initialCategory}
+    />
+  );
+}
   if (showAuth) {
     return <Auth onClose={() => setShowAuth(false)} />;
   }
@@ -154,32 +165,45 @@ if (session && !isAdmin) return <Dashboard session={session} />;
           <span>Study<span>Link</span></span>
         </a>
 
-        <div className="nav-links">
-          <a href="#home">Home</a>
-          <a href="#categories">Categories</a>
-          <a href="#how-it-works">How it works</a>
+        <div className={`nav-menu ${menuOpen ? "active" : ""}`} id="nav-menu">
+          <div className="nav-links">
+            <a href="#home" onClick={() => setMenuOpen(false)}>Home</a>
+            <a href="#categories" onClick={() => setMenuOpen(false)}>Categories</a>
+            <a href="#how-it-works" onClick={() => setMenuOpen(false)}>How it works</a>
+          </div>
+          <div className="nav-buttons">
+            {session && isAdmin ? (
+              <button
+                className="signup-btn"
+                onClick={() => {
+                  setShowAdminHome(false);
+                  setMenuOpen(false);
+                }}
+              >
+                <ShieldCheck size={17} /> Admin Dashboard
+              </button>
+            ) : (
+              <>
+                <button className="login-btn" onClick={() => setShowAuth(true)}>
+                  Login
+                </button>
+                <button className="signup-btn" onClick={() => setShowAuth(true)}>
+                  Get Started
+                </button>
+              </>
+            )}
+          </div>
         </div>
-<div className="nav-buttons">
-  {session && isAdmin ? (
-    <button
-      className="signup-btn"
-      onClick={() => setShowAdminHome(false)}
-    >
-      <ShieldCheck size={17} /> Admin Dashboard
-    </button>
-  ) : (
-    <>
-      <button className="login-btn" onClick={() => setShowAuth(true)}>
-        Login
-      </button>
-      <button className="signup-btn" onClick={() => setShowAuth(true)}>
-        Get Started
-      </button>
-    </>
-  )}
-</div>
-
-        <button className="menu-btn"><Menu /></button>
+        <button
+          className="menu-btn"
+          type="button"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle navigation menu"
+          aria-controls="nav-menu"
+          aria-expanded={menuOpen}
+        >
+          <Menu />
+        </button>
       </nav>
 
       <main>
@@ -257,12 +281,25 @@ if (session && !isAdmin) return <Dashboard session={session} />;
             {categories.map((category) => {
               const Icon = category.icon;
               return (
-                <div className="category-card" key={category.name}>
+                <button
+                  type="button"
+                  className="category-card"
+                  key={category.name}
+                 onClick={() => {
+  setInitialCategory(category.name);
+
+  if (session && isAdmin) {
+    setShowAdminHome(false);
+  } else if (!session) {
+    setShowAuth(true);
+  }
+}}
+                >
                   <div className="category-icon"><Icon size={27} /></div>
                   <h3>{category.name}</h3>
                   <p>{category.count}</p>
                   <ArrowRight className="category-arrow" size={19} />
-                </div>
+                </button>
               );
             })}
           </div>
