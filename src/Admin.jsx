@@ -19,6 +19,8 @@ function Admin({ onBack }) {
   const [loading, setLoading] = useState(true);
   const [loadingStudents, setLoadingStudents] = useState(false);
   const [activeTab, setActiveTab] = useState("materials");
+  const [allMaterials, setAllMaterials] = useState([]);
+const [selectedCategory, setSelectedCategory] = useState("All");
 
   const [stats, setStats] = useState({
     students: 0,
@@ -26,11 +28,12 @@ function Admin({ onBack }) {
     pending: 0
   });
 
-  useEffect(() => {
-    fetchPendingMaterials();
-    fetchStudents();
-    fetchStats();
-  }, []);
+useEffect(() => {
+  fetchPendingMaterials();
+  fetchAllMaterials();
+  fetchStudents();
+  fetchStats();
+}, []);
 
   async function fetchStats() {
     const { count: studentsCount } = await supabase
@@ -68,6 +71,19 @@ function Admin({ onBack }) {
 
     setLoading(false);
   }
+
+async function fetchAllMaterials() {
+  const { data, error } = await supabase
+    .from("materials")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    setAllMaterials(data || []);
+  }
+}
 
   async function fetchStudents() {
     setLoadingStudents(true);
@@ -115,7 +131,12 @@ function Admin({ onBack }) {
   async function logout() {
     await supabase.auth.signOut();
   }
-
+  const filteredAllMaterials =
+  selectedCategory === "All"
+    ? allMaterials
+    : allMaterials.filter(
+        (item) => item.material_type === selectedCategory
+      );
   return (
     <div className="admin-page">
       <nav className="admin-nav">
@@ -164,7 +185,14 @@ function Admin({ onBack }) {
           >
             <FileText size={17} /> Material Approvals
           </button>
-
+   
+             <button
+  className={activeTab === "browse" ? "active" : ""}
+  onClick={() => setActiveTab("browse")}
+>
+  <FileText size={17} /> Browse Materials
+</button>
+       
           <button
             className={activeTab === "students" ? "active" : ""}
             onClick={() => setActiveTab("students")}
@@ -276,6 +304,66 @@ function Admin({ onBack }) {
             </button>
           </>
         )}
+
+{activeTab === "browse" && (
+  <>
+    <div className="admin-tabs">
+      {["All", "Lecture Notes", "Past Questions", "Assignments", "Study Guides"].map((category) => (
+        <button
+          key={category}
+          className={selectedCategory === category ? "active" : ""}
+          onClick={() => setSelectedCategory(category)}
+        >
+          {category}
+        </button>
+      ))}
+    </div>
+
+    <div className="pending-count">
+      {filteredAllMaterials.length} Materials
+    </div>
+
+    {filteredAllMaterials.length === 0 ? (
+      <div className="admin-empty">
+        <FileText size={45} />
+        <h3>No materials found</h3>
+        <p>There are no materials in this category yet.</p>
+      </div>
+    ) : (
+      <div className="admin-materials">
+        {filteredAllMaterials.map((item) => (
+          <div className="admin-card" key={item.id}>
+            <FileText size={30} />
+
+            <div className="admin-card-info">
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+              <small>
+                {item.course_code} • {item.department} • {item.level} Level
+              </small>
+              <small>Category: {item.material_type}</small>
+              <small>Status: {item.status}</small>
+              <small>File: {item.file_name}</small>
+
+              <button
+                className="preview-btn"
+                onClick={() => previewFile(item.file_path)}
+              >
+                Preview Document
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+
+    <button className="refresh-btn" onClick={fetchAllMaterials}>
+      Refresh Materials
+    </button>
+  </>
+)}
+
+
       </main>
     </div>
   );
