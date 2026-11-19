@@ -68,6 +68,10 @@ a {
   font-size: 14px;
 }
 
+.nav-menu {
+  display: contents;
+}
+
 .nav-links a:hover {
   color: #7041e8;
 }
@@ -325,9 +329,17 @@ a {
 
 .category-card {
   border: 1px solid #eeeaf5;
-  padding: 25px 20px;
+  width: 100%;
+  min-height: 190px;
+  padding: 24px;
   border-radius: 15px;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  color: inherit;
+  background: white;
+  font: inherit;
   transition: 0.3s;
 }
 
@@ -356,9 +368,8 @@ a {
 }
 
 .category-arrow {
-  position: absolute;
-  right: 20px;
-  bottom: 22px;
+  align-self: flex-end;
+  margin-top: auto;
   color: #7041e8;
 }
 
@@ -448,17 +459,85 @@ footer p, footer small {
   .category-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+
 @media (max-width: 600px) {
-  .navbar { height: 70px; }
-  .nav-links, .nav-buttons { display: none; }
-  .menu-btn { display: block; }
-  .hero { grid-template-columns: 1fr; padding: 55px 6%; }
-  .hero-visual { padding: 10px 0; }
-  .hero h1 { font-size: 42px; }
-  .features { grid-template-columns: repeat(2, 1fr); }
-  .categories-section, .how-section { padding: 60px 6%; }
-  .section-heading h2 { font-size: 27px; }
-  .category-grid, .steps-grid { grid-template-columns: 1fr; }
-  .cta-section { margin: 40px 5%; }
-  footer { flex-direction: column; align-items: flex-start; }
+  .navbar {
+    height: 70px;
+    position: relative;
+  }
+
+  .nav-menu {
+    display: none;
+  }
+
+  .nav-menu.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    padding: 20px 6%;
+    background: white;
+    border-bottom: 1px solid #eeeaf5;
+    gap: 20px;
+    z-index: 100;
+    box-shadow: 0 12px 20px #34205c12;
+  }
+
+  .nav-menu .nav-links {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .nav-menu .nav-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .menu-btn {
+    display: block;
+    background: transparent;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 55px 6%;
+  }
+
+  .hero-visual {
+    padding: 10px 0;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+  }
+
+  .features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .categories-section,
+  .how-section {
+    padding: 60px 6%;
+  }
+
+  .section-heading h2 {
+    font-size: 27px;
+  }
+
+  .category-grid,
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-section {
+    margin: 40px 5%;
+  }
+
+  footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
