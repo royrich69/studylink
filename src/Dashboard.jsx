@@ -1,5 +1,6 @@
 
 import MyUploads from "./MyUploads";
+import UploadMaterial from "./UploadMaterial";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import {
@@ -10,16 +11,22 @@ import {
   Download,
   LogOut,
   User,
-  GraduationCap
+  GraduationCap,
+    X,
+  Menu
 } from "lucide-react";
 import "./Dashboard.css";
 
-function Dashboard({ session }) {
+function Dashboard({ session, initialCategory = "" }) {
   const [materials, setMaterials] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
   const [showMyUploads, setShowMyUploads] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+const [menuOpen, setMenuOpen] = useState(false);
+
+
   const user = session?.user;
 
   useEffect(() => {
@@ -41,39 +48,82 @@ function Dashboard({ session }) {
     await supabase.auth.signOut();
   }
 
-  const filteredMaterials = materials.filter((item) =>
-    `${item.title} ${item.course_code} ${item.department}`
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  );
+  const filteredMaterials = materials.filter((item) => {
+    const matchesSearch =
+      `${item.title} ${item.course_code} ${item.department}`
+        .toLowerCase()
+        .includes(search.toLowerCase());
 
-if (showMyUploads) {
-  return (
-    <MyUploads
-      user={user}
-      onBack={() => setShowMyUploads(false)}
-    />
-  );
-}
+    const matchesCategory =
+      !selectedCategory || item.material_type === selectedCategory;
 
-   if (showUpload) {
-  return (
-    <UploadMaterial
-      user={user}
-      onClose={() => setShowUpload(false)}
-      onUploaded={fetchMaterials}
-    />
-  );
-}
+    return matchesSearch && matchesCategory;
+  });
+
+  if (showMyUploads) {
+    return (
+      <MyUploads
+        user={user}
+        onBack={() => setShowMyUploads(false)}
+      />
+    );
+  }
+
+  if (showUpload) {
+    return (
+      <UploadMaterial
+        user={user}
+        onClose={() => setShowUpload(false)}
+        onUploaded={fetchMaterials}
+      />
+    );
+  }
 
   return (
     <div className="dashboard">
-      <nav className="dashboard-nav">
-        <h2><BookOpen /> Study<span>Link</span></h2>
-        <button onClick={handleLogout}>
-          <LogOut size={17} /> Logout
-        </button>
-      </nav>
+     
+<nav className="dashboard-nav">
+  <h2><BookOpen /> Study<span>Link</span></h2>
+
+  <button
+    className="student-menu-btn"
+    type="button"
+    onClick={() => setMenuOpen(!menuOpen)}
+    aria-label="Toggle navigation menu"
+  >
+    {menuOpen ? <X /> : <Menu />}
+  </button>
+
+  <div className={`student-nav-links ${menuOpen ? "active" : ""}`}>
+    <button onClick={() => {
+      setSelectedCategory("");
+      setShowMyUploads(false);
+      setShowUpload(false);
+      setMenuOpen(false);
+    }}>
+      Explore Materials
+    </button>
+
+    <button onClick={() => {
+      setShowMyUploads(true);
+      setMenuOpen(false);
+    }}>
+      My Uploads
+    </button>
+
+    <button onClick={() => {
+      setShowUpload(true);
+      setMenuOpen(false);
+    }}>
+      Upload Material
+    </button>
+
+    <button onClick={handleLogout}>
+      <LogOut size={17} /> Logout
+    </button>
+  </div>
+</nav>
+
 
       <main className="dashboard-main">
         <section className="dashboard-welcome">
@@ -85,11 +135,16 @@ if (showMyUploads) {
             >
               My Uploads
             </button>
+
             <p>STUDENT DASHBOARD</p>
-            <h1>Welcome, {user?.user_metadata?.full_name || user?.email?.split("@")[0]}!</h1>
+            <h1>
+              Welcome, {user?.user_metadata?.full_name || user?.email?.split("@")[0]}!
+            </h1>
             <span>Find and share academic materials with other students.</span>
           </div>
-          <div className="welcome-icon"><GraduationCap size={45} /></div>
+          <div className="welcome-icon">
+            <GraduationCap size={45} />
+          </div>
         </section>
 
         <section className="dashboard-stats">
@@ -101,18 +156,40 @@ if (showMyUploads) {
         <section className="materials-section">
           <div className="materials-heading">
             <div>
-              <h2>Explore Materials</h2>
-              <p>Discover resources shared by students.</p>
+              <h2>
+                {selectedCategory || "Explore Materials"}
+              </h2>
+              <p>
+                {selectedCategory
+                  ? `Showing approved ${selectedCategory.toLowerCase()}`
+                  : "Discover resources shared by students."}
+              </p>
             </div>
+
             <button
-  className="upload-material-btn"
-  onClick={() => setShowUpload(true)}
->
-
-
-  <Upload size={17} /> Upload Material
-</button>
+              className="upload-material-btn"
+              onClick={() => setShowUpload(true)}
+            >
+              <Upload size={17} /> Upload Material
+            </button>
           </div>
+
+          {selectedCategory && (
+            <button
+              type="button"
+              onClick={() => setSelectedCategory("")}
+              style={{
+                marginBottom: "15px",
+                padding: "9px 14px",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                background: "white",
+                cursor: "pointer"
+              }}
+            >
+              <X size={15} /> Clear category filter
+            </button>
+          )}
 
           <div className="material-search">
             <Search size={19} />
@@ -129,7 +206,11 @@ if (showMyUploads) {
             <div className="empty-materials">
               <BookOpen size={40} />
               <h3>No materials found</h3>
-              <p>There are no approved materials available yet.</p>
+              <p>
+                {selectedCategory
+                  ? `No approved materials in ${selectedCategory} yet.`
+                  : "There are no approved materials available yet."}
+              </p>
             </div>
           ) : (
             <div className="materials-grid">
@@ -139,6 +220,7 @@ if (showMyUploads) {
                   <h3>{item.title}</h3>
                   <p>{item.course_code}</p>
                   <small>{item.department} • {item.level} Level</small>
+
                   <button
                     onClick={async () => {
                       const { data, error } = await supabase.storage
@@ -166,4 +248,3 @@ if (showMyUploads) {
 }
 
 export default Dashboard;
-import UploadMaterial from "./UploadMaterial";
